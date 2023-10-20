@@ -5,7 +5,6 @@ RUN yum update -y && \
     yum install -y httpd && \
     yum search wget && \
     yum install wget -y && \
-    yum install zip -y && \
     yum install unzip -y
 
 # change directory
