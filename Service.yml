@@ -11,4 +11,4 @@ spec:
       nodePort: 31200
   selector:
     app: phatcao99
-  type: nodePort
+  type: NodePort
