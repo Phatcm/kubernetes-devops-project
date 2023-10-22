@@ -13,4 +13,4 @@ spec:
     app: phatcao99
   type: NodePort
   externalIPs:
-    - 13.229.224.239
+    - 13.228.56.33
