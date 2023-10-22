@@ -1,0 +1,34 @@
+Webhook:
+	- jenkins: configure --> build trigger --> Github hook trigger for GitScm polling
+	- github: setting --> add webhook --> url: <public-ip>:8080/github-webhook/
+
+
+ssh from ansible and jenkin server to minikube server
+	set password in minikube:
+		sudo passwd ubuntu
+		sudo vi /etc/ssh/sshd_config
+		PasswordAuthentication yes
+		PermitRootLogin no (if you want to allow root SSH login; otherwise, set it to no)
+		PermitEmptyPasswords no
+		sudo service ssh restart
+		
+		sudo chown -R ubuntu:ubuntu /home/ubuntu/.ssh
+	
+	create key in ansible:
+		ssh-keygen
+		ssh-copy-id -i /home/ubuntu/.ssh/id_rsa.pub ubuntu@privateip
+		ssh root@private_ip
+		
+		mkdir ansible
+		cd ansible 
+		cat > /etc/ansible/hosts
+		--> [node]
+		--> <kube sv private ip>
+		ansible -m ping node
+		
+		
+
+
+
+
+
