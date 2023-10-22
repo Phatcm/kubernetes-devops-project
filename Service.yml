@@ -12,5 +12,3 @@ spec:
   selector:
     app: phatcao99
   type: NodePort
-  externalIPs:
-    - 13.228.56.33
