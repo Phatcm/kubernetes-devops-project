@@ -6,6 +6,6 @@
      #- name: delete old service
       # command: kubectl delete -f /home/ubuntu/Service.yml
      - name: create new deployment
-       command: sudo kubectl apply -f /home/ubuntu/Deployment.yml
+       command: become kubectl apply -f /home/ubuntu/Deployment.yml
      - name: create new service
-       command: sudo kubectl apply -f /home/ubuntu/Service.yml
+       command: become kubectl apply -f /home/ubuntu/Service.yml
