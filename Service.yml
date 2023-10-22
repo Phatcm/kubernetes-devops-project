@@ -6,9 +6,9 @@ metadata:
     app: phatcao99
 spec:
   ports:
-    - port: 8080                               
-      targetPort: 80                    
+    - port: 8080
+      targetPort: 80
       nodePort: 31200
   selector:
-    app: phatcao99                    
-  type: LoadBalancer
+    app: phatcao99
+  type: NodePort
