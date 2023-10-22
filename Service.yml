@@ -1,14 +1,14 @@
 kind: Service                             
 apiVersion: v1
 metadata:
-  name: mrdevops
+  name: phatcao99
   labels:
-    app: mrdevops
+    app: phatcao99
 spec:
   ports:
     - port: 8080                               
       targetPort: 80                    
       nodePort: 31200
   selector:
-    app: mrdevops                    
+    app: phatcao99                    
   type: LoadBalancer
