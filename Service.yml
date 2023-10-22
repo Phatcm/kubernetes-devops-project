@@ -1,4 +1,4 @@
-kind: Service                             
+kind: Service
 apiVersion: v1
 metadata:
   name: phatcao99
@@ -12,3 +12,5 @@ spec:
   selector:
     app: phatcao99
   type: NodePort
+  externalIPs:
+    - 13.229.224.239
