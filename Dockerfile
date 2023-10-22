@@ -4,30 +4,13 @@ RUN cd /etc/yum.repos.d/
 RUN sed -i 's/mirrorlist/#mirrorlist/g' /etc/yum.repos.d/CentOS-*
 RUN sed -i 's|#baseurl=http://mirror.centos.org|baseurl=http://vault.centos.org|g' /etc/yum.repos.d/CentOS-*
 
-# Install dependencies
-RUN yum update -y && \
-    yum install -y httpd && \
-    yum search wget && \
-    yum install wget -y && \
-    yum install unzip -y
-
-# change directory
-RUN cd /var/www/html
-
-# download webfiles
-RUN wget https://github.com/Phatcm/jupiter/archive/refs/heads/master.zip
-
-# unzip folder
-RUN unzip master.zip
-
-# copy files into html directory
-RUN cp -r jupiter-master/* /var/www/html/
-
-# remove unwanted folder
-RUN rm -rf jupiter-master master.zip
-
-# exposes port 80 on the container
-EXPOSE 80 22
-
-# set the default application that will start when the container start
-ENTRYPOINT ["/usr/sbin/httpd", "-D", "FOREGROUND"]
+RUN yum install -y httpd \
+zip\
+unzip
+ADD https://www.free-css.com/assets/files/free-css-templates/download/page265/shine.zip /var/www/html/
+WORKDIR /var/www/html/
+RUN unzip shine.zip
+RUN cp -rvf shine/* .
+RUN rm -rf shine shine.zip
+CMD ["/usr/sbin/httpd", "-D", "FOREGROUND"]
+EXPOSE 80
