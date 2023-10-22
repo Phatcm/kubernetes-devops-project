@@ -1,0 +1,50 @@
+node{
+    stage('Git checkout'){
+        git 'https://github.com/Phatcm/kubernetes-devops-project.git'
+    }
+    stage('Copy files to Ansible server over ssh'){
+        sshagent(['ubuntu_demo']) {
+            sh 'ssh -o StrictHostKeyChecking=no ubuntu@172.31.46.104'
+            sh 'scp /var/lib/jenkins/workspace/pipeline-demo/* ubuntu@172.31.46.104:/home/ubuntu/'
+        }
+    }
+    stage('Docker build image'){
+        sshagent(['ubuntu_demo']) {
+            sh 'ssh -o StrictHostKeyChecking=no ubuntu@172.31.46.104 sudo chmod 777 /var/run/docker.sock'
+            sh 'ssh -o StrictHostKeyChecking=no ubuntu@172.31.46.104 cd /home/ubuntu/'
+            sh 'ssh -o StrictHostKeyChecking=no ubuntu@172.31.46.104 docker image build -t $JOB_NAME:v1.$BUILD_ID .'
+        }
+    }
+    stage('Docker image tagging'){
+        sshagent(['ubuntu_demo']) {
+            sh 'ssh -o StrictHostKeyChecking=no ubuntu@172.31.46.104 cd /home/ubuntu/'
+            sh 'ssh -o StrictHostKeyChecking=no ubuntu@172.31.46.104 docker image tag $JOB_NAME:v1.$BUILD_ID phatcao99/$JOB_NAME:v1.$BUILD_ID'
+            sh 'ssh -o StrictHostKeyChecking=no ubuntu@172.31.46.104 docker image tag $JOB_NAME:v1.$BUILD_ID phatcao99/$JOB_NAME:latest'
+        }
+    }
+    stage('Push Docker image to Docker Hub'){
+        sshagent(['ubuntu_demo']) {
+            withCredentials([string(credentialsId: 'dockerhub_password', variable: 'dockerhub_password')]) {
+                sh "ssh -o StrictHostKeyChecking=no ubuntu@172.31.46.104 docker login -u phatcao99 -p ${dockerhub_password}"
+                sh 'ssh -o StrictHostKeyChecking=no ubuntu@172.31.46.104 docker image push phatcao99/$JOB_NAME:v1.$BUILD_ID'
+                sh 'ssh -o StrictHostKeyChecking=no ubuntu@172.31.46.104 docker image push phatcao99/$JOB_NAME:latest'
+                
+                sh 'ssh -o StrictHostKeyChecking=no ubuntu@172.31.46.104 docker image rm phatcao99/$JOB_NAME:v1.$BUILD_ID phatcao99/$JOB_NAME:latest $JOB_NAME:v1.$BUILD_ID'
+            }
+        }
+    }
+    stage('Copy files to Kubenetes server over ssh'){
+        sshagent(['ubuntu_demo']) {
+            sh 'ssh -o StrictHostKeyChecking=no ubuntu@172.31.20.146'
+            sh 'scp /var/lib/jenkins/workspace/pipeline-demo/* ubuntu@172.31.20.146:/home/ubuntu/'
+        }
+    }
+    stage('Kubernetes deployment using ansible'){
+        sshagent(['ubuntu_demo']) {
+            sh 'ssh -o StrictHostKeyChecking=no ubuntu@172.31.46.104 cd /home/ubuntu/'
+            sh 'ssh -o StrictHostKeyChecking=no ubuntu@172.31.46.104 ansible -m ping node'
+            sh 'ssh -o StrictHostKeyChecking=no ubuntu@172.31.46.104 ansible-playbook ansible.yml'
+        }
+    }
+    
+}
